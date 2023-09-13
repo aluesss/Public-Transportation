@@ -1,0 +1,308 @@
+=====
+ADD INSTRUCTIONS FOR HOW TO RUN/USE YOUR PROGRAM HERE:
+e.g. What format should we use to input data or add data to events.txt? Anything else we need to know in order to use your program?
+=====
+Running Main.java:
+1. You can either choose "cardholder", "admin", "bus", or "metro"
+2. If you chose cardholder or admin, you will be prompted to login or sign up.
+3. If you chose the bus or metro options, you will be prompted the name of an existing bus or metro in the system (buses are created in admin)
+
+Admin:
+  Type in the options that are shown on the screen (case doesn't matter) to access 
+  corresponding admin's function.]
+  Commands:
+    1.Get Revenue: Gives you the information of today's revenue
+    2.Get Operational Cost: Gives you the information of today's operational cost
+    3.Open System: Open up the system
+    4.Close System: Shut down the system
+    5.Change Password: Change your password
+    6.Create Vehicle: Create new bus or metro
+    7.Remove Vehicle: Remove an exist bus or metro
+    8.View Users: Gives you all the cardholders' names in the current transit system
+    9.Exit: Exits and returns to the admin user menu
+
+CardHolder:
+  Type in the options that are shown on the screen (case doesn't matter) to access 
+  corresponding cardholder's function.
+  Commands:
+    1.AddCard: Creates a new card
+    2.RemoveCard: Deletes an existing card
+    3.CardInfo: Gives you the information of an existing card
+    4.AddBalance: Recharge card balance(choose from $10, $20, $50)
+    5.SuspendCard: Suspends a card
+    6.OpenCard: Opens a suspended card
+    7.Exit: Exits and returns to the Card Holder menu
+
+Bus/Metro:
+  Commands:
+    1. Move: Moves the vehicle forward on the route
+    2. Current Location: Shows the current location of the bus on the route
+    3. Show Route: Shows the route of the bus
+    4. Tap Card: Allows a user to tap a card on the bus card terminal
+    5. Exit: Exits and returns to the main menu
+  Explanation of Tap Card:
+    - When the tap card command is entered the user is prompted to enter a card id, simulating the action of tapping a card on a bus/metro terminal.
+    - After the card id is given, the system searches for a card in the system with that id.
+    - If the card is found, the tapCardTerminal() methods are called in either the bus or metro classes.
+    - If the system is open, card account is open, and card balance is sufficient, the tap will go through and the trip will begin to be recorded or ended.
+
+=====
+LIST ALL FEATURES THAT YOU WORKED ON HERE, AND HOW TO INPUT RELEVANT DATA FOR THE FEATURE (IF APPLICABLE)
+=====
+
+Feature 1:
+  Fare deducted when riding a bus
+  -When the user taps their card on a bus, the card records whether it is going on or off the vehicle.
+  -When the user is going on the vehicle, $2.0 is deducted if they have more than $0 on their account, the current location and time is recorded into the card. Fare is counted towards total revenue.
+  -When the user is going off the vehicle, the current location is compared to the beginning location for the admin to calculate operational costs.
+
+Feature 2:
+  Fare deducted when riding a subway
+  -When the user taps their card on a metro, the card records whether it is going on or off the vehicle.
+  -When the user is going on the vehicle, the trip begins if they have more than $0 on their account, the current location and time is recorded into the card.
+  -When the user is going off the vehicle, the current location is compared to the beginning location for the admin to calculate operational costs and used to count the amount of stations travelled to calculate the total Fare. Fare is counted towards total revenue.
+
+Feature 3:
+  Trip fares are capped at $6
+  -When going off the metro, the total value of that trip cannot exceed $6.0. (This is done using Math.min(6.0, trip fare))
+
+Feature 4:
+  Card holders can have as many cards as they want
+  -Card Holders can create as many cards as they want
+  -Card Hodlers can remove as many cards as they want so long as they have at least 1 card on their account
+
+Feature 5:
+  Cards can be recharged with $10, $20, $50 at a time
+  -Card Holders can recharge the card balance of a card with $10, $20, $50 only, other amounts are rejected
+
+Feature 6:
+  Card holders can view the 3 most recent trips of a card
+  -The 3 most recent trips of a card is recorded on itself so the user can always view it
+
+Feature 7:
+  Card holders can suspend or un suspend a card
+  -Cards can be suspended or opened, if it is suspended it will be unable to tap onto a vehicle
+
+Feature 8:
+  Admin users can see the daily revenue
+  -Admins can view the total revenue of all buses and metro
+
+Feature 9:
+  Admin users can see the daily operational costs
+  -Admins can see the total operational costs calculated by (number of stations/stops travelled by all buses and metro) * (operational cost per station(modifiable))
+
+Feature 10:
+  Admin users can change the daily operational cost multipler
+  -Admins can navigate to a2-peakyblinders/logs/initFile.txt to modify the COST_PER_STATION variable (default is 0.1)
+  -Must run the program at least once for this to show up
+
+Feature 11:
+  Admin users can see a log.txt containing all logs of users going in and out of stations
+  -a2-peakyblinders/logs/transitLog.txt
+  -Format is: Month/Date Hour/Minute/Second CardId VehicleName Location (On or Off)
+
+
+Admin class:
+Contains 3 instance variable:
+String username, String password, TransitSystem transit.
+Variable "transit" contains a TransitSystem that is controled by this admin.
+
+Contains 12 methods:
+1. openSystem: Turn on this admin's TransitSystem, let it become active.
+2. closeSystem: Turn off this admin's TransitSystem, let it can't be access by any users.
+3. getUsername: Get this admin's username
+4. getPassword: Get this admin's passname
+5. setPassword: Receive a string and set it as new password for the admin.
+6. createBus: Create a new bus in the TransitSystem, with a name and a String array of route.
+Then return this bus.
+7. createMetro:Create a new metro in the TransitSystem, with a name and a String array of route.
+Then return this metro.
+8. removeBus: Remove a bus from TransitSystem by its name.
+9. removeMetro: Remove a metro from TransitSystem by its name.
+10. getRevenue: Get the current revenue from TransitSystem.
+11. getOperationalCost: Get the current operational cost from TransitSystem.
+12. viewUsers: Get an arraylist of all cardholders in the TransitSystem.
+------------------------------------
+CardHolder class:
+Contains 3 instance variable:
+String name, String email, HashMap<Integer, card> cards
+Variable "cards" is a hashmap with card's id and a card item.
+
+Contains 13 methods:
+1. getName: Get the card holder's name.
+2. setName: Set a string as card holder's new name.
+3. getEmail: Get the card holder's email.
+4. getCard: Get one card that the card holder have by it's id.
+5. addCard: Add a new card item in card holder's "cards" hashmap.
+6. removeCard: Remove a card from card holder's "cards" hashmap by its id.
+7. getCardArray: Get an array of cards' id that owned by the card holder.
+8. getCards: Get the "cards" variable of this card holder.
+9. getCardInfo: Get a string that contain all cards' information.
+The information is about 3 message: (1) card's id. (2) card balance (3)if this card is open or not.
+10. addBalance: This function allow card holder to add balance in one of his card by card's id.
+11. getBalance: Get a card's current balance by its id.
+12. suspendCard: Suspend one card by its id.
+13. openCard: Open a suspend card by its id.
+------------------------------------------
+Card class:
+Contains 6 instant variables:
+int id, double balance, boolean accountOpen, boolean inTransit, LocalDateTime beginTransitTime
+int beginTransitLocation, String Array recentTrips.
+Variable "accountOpen" shows if this card is open.
+Variable "inTransit" shows if this card is tapped when its owner get on a vehicle or not.
+Variable "beginTransitTime" shows the time of the card is tapped to begin a transit.
+Variable "beginTransitLocation" contains the station's name of where this card was tapped.
+Variable "recentTrips" contains a array of trips.
+
+Contains 13 methods:
+1. getId: Return this card's id.
+2. getBalance: Return this card's balance.
+3. getBeginTransitTime: Return the time of the trip begin.
+4. getBeginTransitLocation: Return the location of the trip begin.
+5. isAccountOpen: Shows if this card is open.
+6. isInTransit: Shows if the card is in a transit.
+7. rechargeBalance: Receive a double as the value and add this double variable in this card's balance.
+8. openAccount: Make this card available for tapping.
+9. closeAccount: Make this card unavailable for tapping.
+10. beginTransit: Begins a trip with this card(consider as the card is tapped for enter the vehicle)
+11. endTransit: Ends a trip with this card(consider as the card is tapped for exit the vehicle)
+12. addRecentTrip: Add the trip's information in variable recentTrips.
+13. getRecentTrips: Return the variable recentTrips.
+------------------------------------------
+TransitSystem class: 
+Contains 11 instant variables:
+boolean transitSytemOpen, File initFile, File adminLog, File userLog, File transitLog, File busLog,
+File metroLog, HashMap<String, Admin> adminUsers, HashMap<String, CardHolder> cHUsers, HashMap<String, Bus> buses, 
+HashMap<String, Metro> metro
+Variable "transitSystemOpen": Show if this system is running
+Variable "initFile": Constains base data of the system
+Variable "adminLog": Constains information of all the admin users in the system
+Variable "userLog": Constains information of all the card holders in the system
+Variable "metroLog": Constains information of all the metros in the system
+Variable "busLog": Constains information of all the buses in the system
+Variable "transitLog": Constains information of all the transit interactions happened in the system
+Variable "adminUsers": Stores the accounts for admin users by using their usernames as keys
+Variable "cHUsers": Stores the accounts for card holders by using their emails as keys
+Variable "buses": Stores all the buses by using their names as keys
+Variable "metros": Stores all the metros by using their names as keys
+
+Contains 4 static variables:
+int id, float COST_PER_STATION, float BUS_FARE, float METRO_FARE
+Variable "COST_PER_STATION": value of the operational cost of each stop/station reached by each bus/metro
+Variable "BUS_FARE": Travel cost for each bus stop reached by one card.
+Variable "METRO_FARE": Travel cost for each metro station reached by one card.
+
+Contains 27 methods:
+1. getId: Return this system's id.
+2. setId: Motify this system's id and update the initFile
+3. getCOST_PER_STATION: return the value of COST_PER_STATION
+4. getBUS_FARE: return the value of BUS_FARE
+5. getMETRO_FARE: return the value of METRO_FARE
+6. readInitFile: print out the initFile
+7. readBusFile: print out the busFile
+8. readMetroFile: print out the metroFile
+9. readAdminFile: print out the adminFile
+10. readuserFile: print out the userFile
+11. readTransitFile: print out the transitFile
+12. updateInitFile: Update the initFile with the latest data
+13. updateBusFile: Update the busFile with the latest data
+14. updateMetroFile: Update the metroFile with the latest data
+15. updateUserFile: Update the userFile with the latest data
+16. updateAdminFile: Update the adminFile with the latest data
+17. adminSignUp: return a new admin account if the input username is not taken otherwise null
+18. cHSignUp: return a new card holder account if the input email is not taken otherwise null
+19. adminLogin: return a exist admin account if the input username and password are matched otherwise null
+20. cHLogin: return a exist card holder account if the input email and name are matched otherwise null
+21. openSystem: Motify the variable "transitySystemOpen" to true
+22. closeSystem: Motify the variable "transitySystemOpen" to false
+23. tapCard(metro): Deducts money of the given card id based on travel rules of metro
+24. tapCard(bus): Deducts money of the given card id based on travel rules of bus
+25. getBuses: return the variable "buses"
+26. getMetro: return the variable "metro"
+27. getCH: return the variable "cHUsers"
+------------------------------------------
+<<<<<<< HEAD
+Location class:
+Super class for Stop class and Station class.
+Contain 1 variable
+String name
+
+Contain 2 methods:
+1. getName(): Return this stop/class name
+2. setName(): Set a string as this stop/class new name.
+------------------------------------------
+Stop class:
+Child class of Location class.
+Inherite all variable in Location class.
+Inherite all method in Location class.
+------------------------------------------
+Station class:
+Child class of Location class.
+Inherite all variable in Location class.
+Inherite all method in Location class.
+-----------------------------------------------------
+Vehicle class:
+
+Super class for Bus and Metro class
+
+Contains 6 variables:
+String name, Sttring[] routes, double revenue, 
+int locationsReached, int currentLocation to show current location as an int
+Static TransitSystem transitsystem to assign one transitsystem to all vehicles
+
+Contains 11 methods:
+1. addRevenue: adds to revenue of this vehicle
+2. getRevenue: returns revenue of this vehicle
+3. getName: returns vehicle name
+4. setNmae: Assigns vehicle name
+5. getRoute: returns vehicle route
+6. setRoute: assigns vehicle route
+7. getCurrentLocation: returns the int value of this vehicles current location
+8. setCurrentLocation: assigns this vehicles current location
+9. addlocationreached: updates the locations reached by this vehicle
+10. getLocationsreached: returns the locations reached by this vehicle
+11. moveVehicle: moves this vehicle to the next location on it's route and prints a message if it is already at the end of it's route
+------------------------------------------------------
+Bus class:
+Child class of Vehicle class
+
+Contains 1 variable:
+static FARECOST is the farecost of all the buses
+
+Contains 3 methods:
+1. tapCardTerminal deducts farecost from the balance of the card hasn't reached the 6$ cap
+2. get_FARECOST returns the farecost of all the buses
+3. set_FARECOST sets the farecost of all the buses
+------------------------------------------------------
+Metro class:
+Child class of Vehicle class
+
+Contains 1 variable:
+static FARECOST is the farecost of all the metro trains
+
+Contains 3 methods:
+1. tapCardTerminal deducts farecost from the balance of the card hasn't reached the 6$ cap
+2. get_FARECOST returns the farecost of all the trains
+3. set_FARECOST sets the farecost of all the trains
+-----------------------------------------------------
+VehicleFacory:
+Implements the Factory design pattern
+
+contains 1 method
+1. createVehicle creates a vehicle depending on the name of the product parameter, i.e a bus if product == bus
+or a metro if product == metro
+=======
+>>>>>>> 4bf1330eef6736d469ede363fadfa8ee9ce9e708
+
+
+
+
+
+
+
+
+======
+
+Note: If you have design decisions that don't fit under a specific feature, but are instead relevant to multiple features, feel free to include them at the bottom of this file here.
+
+OTHER NOTES

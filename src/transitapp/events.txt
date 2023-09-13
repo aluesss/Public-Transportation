@@ -1,0 +1,41 @@
+Main.java (Case matter):
+Type in "CardHolder" or "Admin" to access corresponding section.
+
+Admin:
+If you have an Admin account, type "Y" to login, otherwise type "N" to 
+sign up.
+
+After logging in you can decide to be an admin user, bus, or metro.
+
+Admin User commands:
+get revenue
+get operational costs
+open system
+close system
+change password/username
+create buses or metros
+remove buses or metros
+view all users
+
+Bus User:
+takes in a card id input
+if card is in the system, calls the tap card from the transit system to see
+if the user is going on or off and deducts balance appropriately.
+
+Metro User:
+works just like the bus
+
+CardHolder:
+If you have a CardHolder account, type "Y" to login, otherwise type "N" to 
+sign up.
+
+Order:
+"AddCard" : Create a new card with your own id and 19.0 balance.
+"RemoveCard": Type in a card's id to remove it from your account.
+"GetCardInfo": Get all cards' id and balance that you have.
+"AddBalance":Type in a card's id and the balance you want to charge to
+charge the card.
+"GetBalance": Type in a card's id to check its balance.
+"SuspendCard": Type in a open card's id to suspend it.
+"OpenCard": Type in a suspend card's id to open it.
+"Exit": Log out and enter the log in section again.
